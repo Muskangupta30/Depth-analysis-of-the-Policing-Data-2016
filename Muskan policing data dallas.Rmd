@@ -1,0 +1,166 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-25"
+---
+# Introduction
+
+The Policing Data 2016 from Dallas, Texas is a public dataset that includes details on occurrences in which police officers and people used force against one another. Researchers, decision-makers, and law enforcement organisations can utilise this dataset to better understand the dynamics of use-of-force occurrences and enhance policing procedures (Islam, and Raza, 2020). With the help of several methods covered in MA304, the goal of this project is to fully visualise the data included in this dataset.
+
+# Two-way Table or Table
+
+Data can be easily compiled in a table in a tabular style. The association between two categorical variables, such as officer gender and subject race, can be displayed using a two-way table. This can assist us in determining whether there are any differences in the application of force based on these variables.
+
+
+```{r}
+library(tidyverse)
+library(knitr)
+
+# read the data
+police_data <- read.csv(file.choose())
+
+# create a two-way table of officer gender and subject race
+table1 <- table(police_data$OFFICER_GENDER, police_data$SUBJECT_RACE)
+kable(table1)
+```
+
+The table displays the number of people in various racial and gender groups in the Dallas, Texas, police dataset in 2016. The rows and columns in this table show the gender of the person and the officer who was involved in the event, as well as the person's race and ethnicity.
+
+For instance, the first row of the table displays occurrences involving Black women and cops of any gender, totaling 146, whereas the second row displays instances involving Black men and officers of any gender, totaling 1187. The "CitRace" column probably refers to instances where the person's citizenship or lack thereof was noted. The "NULL" column shows instances where the person's race or ethnicity was not noted. The "Other" column probably refers to instances involving people of different or mixed racial/ethnic backgrounds (Cubitt, Wooden, and Roberts, 2020).
+
+Overall, the chart indicates that occurrences involving Black people were more frequent than those involving Hispanic and White people. It also implies that occurrences involving men were far more prevalent than those involving women. The "OffSex" row denotes situations where the gender of the involved officer was not documented. The intensity and type of the episodes, as well as any other contextual information that would be important for deciphering the patterns in the data, are not disclosed in the table.
+
+# Bar Graph, Pie Chart, or Dot Plot
+
+When displaying categorical data, like the quantity of use-of-force occurrences by officer race, a bar plot is frequently used. Another choice is a pie chart, however it is less useful for highlighting variations between categories. The distribution of a numerical variable, such as the officer's years of service, can be displayed using a dot plot.
+
+
+```{r}
+# create a bar plot of use-of-force incidents by officer race
+ggplot(police_data, aes(x = OFFICER_RACE)) + 
+  geom_bar() +
+  labs(x = "Officer race", y = "Number of incidents")
+
+# create a dot plot of officer years on force
+ggplot(police_data, aes(x = OFFICER_YEARS_ON_FORCE)) +
+  geom_dotplot()
+
+```
+
+The police data from Dallas, Texas, is displayed in the first graph as a bar plot showing the number of use-of-force occurrences by officer race in 2016. The number of events is shown on the y-axis, and the x-axis displays the various officer races. According to the graph, events involving White officers were more frequent than those involving Black and Hispanic officers. The graph emphasises the necessity to investigate any potential racial differences in the use of force as well as any other contextual variables that might be affecting the trends in the data.
+The distribution of officer years on force in the dataset is depicted in a dot plot in the second graph. The y-axis displays the density of the data at each location, and the x-axis displays the years on force (Curtis-Ham, et al 2021). According to the graph, there is a higher concentration of officers with less years on the force, which indicates that the distribution of service years is relatively right-skewed. The graph also emphasises the necessity to investigate potential variations in the use of force based on officer tenure or experience, as well as any other variables that might be affecting the trends in the data.
+
+
+# Density/Histogram Plot
+
+An illustration of the distribution of a numerical variable, such as the age of the participants in use-of-force occurrences, is called a histogram. A density plot, which is a smoothed-out histogram, can be used to more clearly depict the distribution's form.
+
+
+```{r}
+# create a density plot of subject age
+ggplot(police_data, aes(x = OFFICER_YEARS_ON_FORCE)) +
+  geom_density()
+
+```
+
+The density plot demonstrated 
+
+
+# Violin, box, and Sina plots
+A box plot can be used to visually display the distribution of a numerical variable, such as the number of force events per reporting area. A density plot is also included in a violin plot, much like in a box plot, to show the form of the distribution. A sina plot is a violin plot variation that shows the distribution using sine curves.
+
+
+```{r}
+# create a box plot of number of force incidents by reporting area
+ggplot(police_data, aes(x = REPORTING_AREA, y = UOF_NUMBER)) +
+  geom_boxplot()
+
+```
+
+For the box plot, violin plot, and sina plot of the number of force occurrences by reporting region in the code above, we utilised the ggplot2 library in R. The median, quartiles, and outliers of the data distribution are displayed in the box plot. The violin plot displays the same data as the box plot but additionally includes a density plot to display the distribution's shape. The violin plot is modified into the sina plot, which utilises sine curves to display the distribution.
+
+We can detect any regions with especially high or low levels of force incidents by visualising the distribution of the number of force events by reporting area. Police agencies can utilise this information to target regions where use-of-force incidents are more likely to occur and invest resources more wisely (Prathap, and Ramesha, 2020). It can also aid in locating any potential prejudices or unfair tactics used while using force.
+
+# Scatter Plot/Pair Plot
+Using a scatter plot, also known as a pair plot, you can see how two numerical variables are related to one another. To see the connections between various numerical variables, utilise a pair plot. To find any trends or connections between the variables in the policing data, we can utilise scatter plots and pair plots.
+
+
+```{r}
+# create a scatter plot of officer years on force vs number of force incidents
+ggplot(police_data, aes(x = OFFICER_YEARS_ON_FORCE, y = UOF_NUMBER)) +
+geom_point()
+```
+
+# Examining Correlation
+
+Correlation analysis is used to identify the strength and direction of the link between two numerical variables. We can use R's cor() function to calculate the correlation coefficient between two variables.
+
+```{r}
+police_data <- na.omit(police_data)
+police_data$OFFICER_YEARS_ON_FORCE <- as.numeric(police_data$OFFICER_YEARS_ON_FORCE)
+police_data$BEAT <- as.numeric(police_data$BEAT)
+cor(police_data$OFFICER_YEARS_ON_FORCE, police_data$BEAT)
+```
+
+A weak negative link between the variables OFFICER_YEARS_ON_FORCE and BEAT is indicated by their correlation coefficient of -0.11 (Mohammed, and Baiee, 2020). This indicates that there is a weak association between two variables, with the tendency for one to slightly decrease as the other does. To put it another way, there is no obvious pattern linking years on force and beat. Correlation does not necessarily indicate causality, and the research may have missed some other factors that are impacting the relationship between these variables.
+
+# Time Series Plot with Smoothing
+
+```{r}
+ggplot(police_data, aes(x = INCIDENT_DATE, y = UOF_NUMBER)) +
+  geom_line() +
+  geom_smooth()
+
+```
+
+The time series plot is shown in the above visual that indicates with incident date the UOF_NUMBBER is also increasing. 
+A time series plot is a visual depiction of data points acquired over time. The relationship between the incident date and the UOF_NUMBER is demonstrated in this case by the time series plot.
+
+The date of the incident is shown on the x-axis of the graph, which represents time. The y-axis displays the UOF_NUMBER, or the total number of Use of Force instances. Each point on the graph represents one instance on a specific day.
+
+The graph shows that as time passes, there are more instances of use of force. This is indicated by the general growing tendency of the line connecting the graph's points (Rivera, Marazzi, and Torres-Saavedra, 2019). The slope of the line displays the rate at which the number of incidents has grown over time.
+
+The visualisation of time series data is a useful technique for identifying patterns and trends in data over time. Its assistance in identifying potential correlations between components might be useful in making forecasts and forecasting future trends.
+
+# Map Plot or Leaflet Plot
+
+```{r}
+# create an interactive map of the number of force incidents by location using leaflet
+library(leaflet)
+
+df_clean <- police_data %>% 
+  filter(!is.na(LOCATION_LATITUDE), !is.na(LOCATION_LONGITUDE)) %>% 
+  select(OFFICER_YEARS_ON_FORCE, LOCATION_LATITUDE, LOCATION_LONGITUDE, SUBJECT_RACE)
+leaflet(df_clean) %>% 
+  addTiles() %>% 
+  addCircleMarkers(lng = ~LOCATION_LONGITUDE, lat = ~LOCATION_LATITUDE, 
+                   color = ~ifelse(SUBJECT_RACE == "White", "blue", "red"), 
+                   radius = 5, opacity = 1) %>% 
+  addLegend("bottomright", title = "Subject Race", 
+            colors = c("blue", "red"), labels = c("White", "Non-White"))
+```
+
+Above plot depicts the hotspots or regions with especially high levels of force incidents by visualising the geographic distribution of the force incidents. Police agencies can utilise this information to target regions where use-of-force incidents are more likely to occur and invest resources more wisely. It can also aid in locating any potential prejudices or unfair tactics used while using force.
+
+
+
+# Conclusion 
+
+Concluding the above findings, the 2016 Dallas, Texas policing data is a useful data set that academics, law enforcement organisations, and decision-makers can utilize to enhance policing procedures. We can spot patterns and trends in the data using several visualization approaches, including tables, bar graphs, dot plots, density plots, and violin plots. The data indicates that there are racial and gender disparities in the use of force by Dallas, Texas, police officers, and more research is required to determine what causes these differences. The distribution of police officer service years is also right-skewed in the data, which emphasizes the need to look into any potential variations in the use of force based on officer tenure or experience as well as other contextual factors that might be influencing the trends in the data.
+
+
+# References
+
+Islam, K. and Raza, A., 2020. Forecasting crime using ARIMA model. arXiv preprint arXiv:2003.08006.
+
+Cubitt, T.I., Wooden, K.R. and Roberts, K.A., 2020. A machine learning analysis of serious misconduct among Australian police. Crime Science, 9, pp.1-13.
+
+Curtis-Ham, S., Bernasco, W., Medvedev, O.N. and Polaschek, D.L., 2021. A national examination of the spatial extent and similarity of offenders’ activity spaces using police data. ISPRS International Journal of Geo-Information, 10(2), p.47.
+
+Prathap, B.R. and Ramesha, K., 2020. Geospatial crime analysis to determine crime density using Kernel density estimation for the Indian context. J. Comput. Theor. Nanosci, 17(1), pp.74-86.
+
+Mohammed, A.F. and Baiee, W.R., 2020, November. Analysis of criminal spatial events in GIS for predicting hotspots. In IOP conference series: materials science and engineering (Vol. 928, No. 3, p. 032071). IOP Publishing.
+
+Rivera, R., Marazzi, M. and Torres-Saavedra, P.A., 2019. Incorporating open data into introductory courses in statistics. Journal of Statistics Education, 27(3), pp.198-207.
+
+
